@@ -1,0 +1,28 @@
+__author__ = 'vleansan'
+#coding=utf-8
+
+import urllib
+import re
+import urllib2
+
+x=0
+for i in xrange(1,4):
+    response = urllib2.urlopen("http://soso.gangqinpu.com/tosearch.aspx?searchname=%b3%f5%d2%f4%ce%b4%c0%b4&putype=0&searchtype=1&shows=0&currentPage=" + "%d"%i)
+    reg=r'http://www.gangqinpu.com/html/\d{5}.htm'
+    music=re.compile(reg)
+    musiclist=re.findall(music,response.read())
+
+
+    for link in musiclist:
+        print link
+        newpage = urllib2.urlopen(link)
+        fit=r'/pu/\d{4}/\d{1,2}/\d{1,2}/[0-9a-zA-Z\_]+.mid|/pu/\d{4}/\d{1,2}/\d{1,2}/[0-9]+/[0-9a-zA-Z\_]+.mid'
+        target=re.compile(fit)
+        rawdownloadtarget=re.findall(target,newpage.read())
+        if len(rawdownloadtarget)==1:
+            refinedone="http://www.gangqinpu.com"+rawdownloadtarget[0]
+            urllib.urlretrieve(refinedone,r"E:\newmidi\%s.mid"%x)
+            x+=1
+        elif len(rawdownloadtarget)!=1:
+            print "this can't be done,pls do sth!"
+    print "page"+"%d"%i+"done"
